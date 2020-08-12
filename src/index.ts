@@ -1,4 +1,3 @@
-import "express-async-errors"; // For ExpressJs only
 import App from "./infrastructure/server/App";
 import BaseController from "./adapters/controllers/BaseController";
 
