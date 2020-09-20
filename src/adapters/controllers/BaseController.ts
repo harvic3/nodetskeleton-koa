@@ -1,4 +1,5 @@
 import { Router, Context } from "../../infrastructure/server/CoreModules";
+export { Context } from "../../infrastructure/server/CoreModules";
 import { IResult } from "result-tsk";
 
 export default class BaseController {

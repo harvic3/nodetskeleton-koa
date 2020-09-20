@@ -1,9 +1,10 @@
-import config from "../config";
-import { Server, BodyParser, cors } from "./CoreModules";
 import BaseController from "../../adapters/controllers/BaseController";
-import localization from "../middlewares/localization";
-import handleError from "../middlewares/handleError";
-import corsOptions from "../middlewares/cors/index";
+import resources from "../../application/shared/locals/index";
+import { Server, BodyParser, cors } from "./CoreModules";
+import localization from "../middleware/localization";
+import handleError from "../middleware/handleError";
+import corsOptions from "../middleware/cors/index";
+import config from "../config";
 
 const bodyParser = BodyParser;
 
@@ -12,12 +13,13 @@ export default class App {
 
   constructor(controllers: BaseController[]) {
     this.app = new Server();
-    this.LoadMiddlewares();
+    this.LoadMiddleware();
     this.LoadControllers(controllers);
     this.LoadHandleError();
+    this.Settings();
   }
 
-  public LoadMiddlewares(): void {
+  public LoadMiddleware(): void {
     this.app.use(cors(corsOptions));
     this.app.use(bodyParser());
     this.app.use(localization());
@@ -35,9 +37,24 @@ export default class App {
     this.app.on("error", handleError());
   }
 
-  public Listen(): void {
+  private Settings(): void {
+    resources.SetDefaultLanguage(config.params.defaultLang);
+  }
+
+  private Listen(): void {
     this.app.listen(config.server.port, () => {
-      console.log(`Server running on ${config.server.host}:${config.server.port}`);
+      console.log(
+        `Server running on ${config.server.root}${config.server.host}:${config.server.port}`,
+      );
     });
+  }
+
+  private RunServices(): void {
+    // Initialize db and other services here and once started run Listen
+    this.Listen();
+  }
+
+  public Start(): void {
+    this.RunServices();
   }
 }
