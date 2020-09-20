@@ -1,5 +1,5 @@
-import config from "../../config";
 import { Context } from "../../server/CoreModules";
+import config from "../../config";
 
 const validOrigins: string[] = config.server.origins.split(",");
 

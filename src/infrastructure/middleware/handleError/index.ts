@@ -1,8 +1,8 @@
-import config from "../../config";
-import { Context } from "../../server/CoreModules";
-import { Result } from "result-tsk";
 import { ApplicationError } from "../../../application/shared/errors/ApplicationError";
 import resources from "../../../application/shared/locals/index";
+import { Context } from "../../server/CoreModules";
+import { Result } from "result-tsk";
+import config from "../../config";
 
 export default function () {
   return async function (err: ApplicationError, context: Context): Promise<void> {
