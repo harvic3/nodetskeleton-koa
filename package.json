@@ -1,5 +1,5 @@
 {
-  "name": "nodetskeleton-koajs",
+  "name": "nodetskeleton-koa",
   "version": "1.0.0",
   "description": "A skeleton for use typescript with NodeJs",
   "main": "./dist/index.js",
@@ -10,7 +10,7 @@
     "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
     "pretty-quick": "pretty-quick",
     "pretty-check": "pretty-quick --check",
-    "precommit": "npm run lint && npm run pretty-quick --staged && npm run test",
+    "pre-commit": "npm run lint && npm run pretty-quick --staged && npm run test",
     "start": "node dist/index"
   },
   "repository": {
@@ -66,7 +66,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm run precommit"
+      "pre-commit": "npm run pre-commit"
     }
   }
 }
