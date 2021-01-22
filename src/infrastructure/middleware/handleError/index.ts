@@ -17,7 +17,7 @@ export default function () {
         config.params.defaultError.code,
       );
     }
-    context.status = result.statusCode;
+    context.status = Number(result.statusCode);
     context.body = result.ToResultDto();
   };
 }

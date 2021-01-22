@@ -8,7 +8,7 @@ export default class BaseController {
   }
   router: Router;
   HandleResult(ctx: Context, result: IResult): void {
-    ctx.status = result.statusCode;
+    ctx.status = Number(result.statusCode);
     if (result.success) {
       ctx.body = result.message ? result.ToResultDto() : result.ToResultDto().data;
     } else {
