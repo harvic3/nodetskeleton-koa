@@ -1,25 +1,25 @@
-import httpClient, { Headers } from "../../../infrastructure/httpClient";
 import { IFeelingQueryService } from "../../../application/modules/feeling/serviceContracts/queryServices/IFeelingQueryService";
-import { ApplicationError } from "../../../application/shared/errors/ApplicationError";
 import { ITextFeeling } from "../../../domain/textFeeling/TextFeeling.interface";
-import { TextFeelingRepoModel } from "./models/TextFeeling.model";
-import { TextFeeling } from "../../../domain/textFeeling/TextFeeling";
-import { Sentiment } from "../../../domain/sentence/Sentiment";
 import { TextDto } from "../../../application/modules/feeling/dtos/TextReq.dto";
-import * as resultCodes from "../../../application/shared/result/resultCodes.json";
+import httpClient, { Headers } from "../../../infrastructure/httpClient";
+import { TextFeeling } from "../../../domain/textFeeling/TextFeeling";
+import { ApplicationError, BaseProvider } from "../base/BaseProvider";
+import { ITextFeelingResponse } from "./models/ITextFeelingResponse";
+import { Sentiment } from "../../../domain/sentence/Sentiment";
+import { ITextFeelingError } from "./models/ITextFeelingError";
 
-const textFeelingApi = "https://sentim-api.herokuapp.com/api/v1/";
+const TEXT_FEELING_MOCK_API = "https://run.mocky.io/v3/601532db-605a-4458-bf5a-e6bbfddaa7b6";
 
-export default class TextFeelingProvider implements IFeelingQueryService {
-  async AnalyzeText(text: string): Promise<ITextFeeling> {
+export default class TextFeelingProvider extends BaseProvider implements IFeelingQueryService {
+  async analyzeText(text: string): Promise<ITextFeeling> {
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
     headers.append("Accept", "application/json");
     const content = new TextDto();
     content.text = text;
     try {
-      const tResponse = await httpClient.Send<TextFeelingRepoModel>(
-        textFeelingApi,
+      const tResponse = await httpClient.send<ITextFeelingResponse, ITextFeelingError>(
+        TEXT_FEELING_MOCK_API,
         httpClient.Methods.POST,
         {
           body: JSON.stringify(content),
@@ -27,11 +27,11 @@ export default class TextFeelingProvider implements IFeelingQueryService {
           serializationMethod: httpClient.SerializationMethod.json,
         },
       );
-      const response = tResponse.response as TextFeelingRepoModel;
+      const response = tResponse.response as ITextFeelingResponse;
       if (!tResponse.success) {
         throw new ApplicationError(
           tResponse.message,
-          tResponse.statusCode || resultCodes.INTERNAL_SERVER_ERROR,
+          tResponse.statusCode || this.applicationStatusCode.INTERNAL_SERVER_ERROR,
           JSON.stringify(tResponse.error),
         );
       }
@@ -42,7 +42,7 @@ export default class TextFeelingProvider implements IFeelingQueryService {
     } catch (error) {
       throw new ApplicationError(
         error.message,
-        error.code || resultCodes.INTERNAL_SERVER_ERROR,
+        error.code || this.applicationStatusCode.INTERNAL_SERVER_ERROR,
         JSON.stringify(error),
       );
     }

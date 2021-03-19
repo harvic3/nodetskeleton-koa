@@ -1,60 +1,58 @@
-import BaseController from "../../adapters/controllers/BaseController";
+import BaseController from "../../adapters/controllers/base/BaseController";
+import localizationMiddleware from "../middleware/localization";
+import handlerErrorMiddleware from "../middleware/handleError";
 import resources from "../../application/shared/locals/index";
-import { Server, BodyParser, cors } from "./CoreModules";
-import localization from "../middleware/localization";
-import handleError from "../middleware/handleError";
-import corsOptions from "../middleware/cors/index";
+import { Server, bodyParser, cors } from "./CoreModules";
+import corsMiddleware from "../middleware/cors/index";
 import config from "../config";
-
-const bodyParser = BodyParser;
 
 export default class App {
   public app: Server;
 
   constructor(controllers: BaseController[]) {
     this.app = new Server();
-    this.LoadMiddleware();
-    this.LoadControllers(controllers);
-    this.LoadHandleError();
-    this.Settings();
+    this.loadMiddleware();
+    this.loadControllers(controllers);
+    this.loadHandleError();
+    this.setups();
   }
 
-  public LoadMiddleware(): void {
-    this.app.use(cors(corsOptions));
+  public loadMiddleware(): void {
+    this.app.use(cors(corsMiddleware.handlerOptions));
     this.app.use(bodyParser());
-    this.app.use(localization());
+    this.app.use(localizationMiddleware.handler);
   }
 
-  private LoadControllers(controllers: BaseController[]) {
+  private loadControllers(controllers: BaseController[]) {
     controllers.forEach((controller) => {
-      controller.router.prefix(config.server.root);
+      controller.router.prefix(config.server.Root);
       this.app.use(controller.router.routes());
       this.app.use(controller.router.allowedMethods());
     });
   }
 
-  private LoadHandleError(): void {
-    this.app.on("error", handleError());
+  private loadHandleError(): void {
+    this.app.on("error", handlerErrorMiddleware.handler);
   }
 
-  private Settings(): void {
-    resources.SetDefaultLanguage(config.params.defaultLang);
+  private setups(): void {
+    resources.setDefaultLanguage(config.params.DefaultLang);
   }
 
-  private Listen(): void {
-    this.app.listen(config.server.port, () => {
+  private listen(): void {
+    this.app.listen(config.server.Port, () => {
       console.log(
-        `Server running on ${config.server.root}${config.server.host}:${config.server.port}`,
+        `Server running on ${config.server.Host}:${config.server.Port}${config.server.Root}`,
       );
     });
   }
 
-  private RunServices(): void {
+  private runServices(): void {
     // Initialize db and other services here and once started run Listen
-    this.Listen();
+    this.listen();
   }
 
-  public Start(): void {
-    this.RunServices();
+  public start(): void {
+    this.runServices();
   }
 }

@@ -4,20 +4,23 @@ import { Context } from "../../server/CoreModules";
 import { Result } from "result-tsk";
 import config from "../../config";
 
-export default function () {
-  return async function (err: ApplicationError, context: Context): Promise<void> {
+export class HandlerErrorMiddleware {
+  handler(err: ApplicationError, context: Context): void {
     const result = new Result();
     if (err?.name === "ApplicationError") {
       console.log("Controlled application error", err.message);
-      result.SetError(err.message, err.errorCode);
+      result.setError(err.message, err.errorCode);
     } else {
+      // Send to your log this error
       console.log("No controlled application error", err);
-      result.SetError(
-        resources.Get(config.params.defaultError.message),
-        config.params.defaultError.code,
+      result.setError(
+        resources.get(config.params.defaultApplicationError.Message),
+        config.params.defaultApplicationError.Code,
       );
     }
     context.status = Number(result.statusCode);
-    context.body = result.ToResultDto();
-  };
+    context.body = result.toResultDto();
+  }
 }
+
+export default new HandlerErrorMiddleware();

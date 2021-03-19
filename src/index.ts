@@ -1,5 +1,5 @@
+import BaseController from "./adapters/controllers/base/BaseController";
 import App from "./infrastructure/server/App";
-import BaseController from "./adapters/controllers/BaseController";
 
 // Region controllers
 import healthController from "./adapters/controllers/health/HealthController";
@@ -10,4 +10,4 @@ const controllers: BaseController[] = [healthController, textFeelingController];
 
 const app = new App(controllers);
 
-app.Start();
+app.start();

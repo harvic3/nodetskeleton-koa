@@ -1,16 +1,17 @@
-import BaseController, { Context } from "../BaseController";
+import BaseController, { Context } from "../base/BaseController";
 import { pongUseCase } from "./container/index";
 
 class HealthController extends BaseController {
   constructor() {
     super();
-    this.InitializeRoutes();
+    this.initializeRoutes();
   }
-  private InitializeRoutes(): void {
-    this.router.get("/ping", this.Pong);
+  private initializeRoutes(): void {
+    this.router.get("/ping", this.pong);
   }
-  Pong = async (context: Context): Promise<void> => {
-    this.HandleResult(context, await pongUseCase.Execute());
+
+  pong = async (context: Context): Promise<void> => {
+    this.handleResult(context, await pongUseCase.execute());
   };
 }
 

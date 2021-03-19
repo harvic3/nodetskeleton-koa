@@ -1,5 +1,5 @@
-import BaseController, { Context } from "../BaseController";
 import { TextDto } from "../../../application/modules/feeling/dtos/TextReq.dto";
+import BaseController, { Context } from "../base/BaseController";
 import {
   getFeelingTextUseCase,
   getHighestFeelingSentenceUseCase,
@@ -9,26 +9,28 @@ import {
 class TextFeelingController extends BaseController {
   public constructor() {
     super();
-    this.InitializeRoutes();
+    this.initializeRoutes();
   }
 
-  private InitializeRoutes() {
-    this.router.post("/feeling", this.GetFeelingText);
-    this.router.post("/feeling/highest", this.GetHighestFeelingSentence);
-    this.router.post("/feeling/lowest", this.GetHighestFeelingSentence);
+  private initializeRoutes() {
+    this.router.post("/feeling", this.getFeelingText);
+    this.router.post("/feeling/highest", this.getHighestFeelingSentence);
+    this.router.post("/feeling/lowest", this.getHighestFeelingSentence);
   }
 
-  GetFeelingText = async (context: Context): Promise<void> => {
+  getFeelingText = async (context: Context): Promise<void> => {
     const textDto: TextDto = context.request.body;
-    this.HandleResult(context, await getFeelingTextUseCase.Execute(textDto));
+    this.handleResult(context, await getFeelingTextUseCase.execute(textDto));
   };
-  GetHighestFeelingSentence = async (context: Context): Promise<void> => {
+
+  getHighestFeelingSentence = async (context: Context): Promise<void> => {
     const textDto: TextDto = context.request.body;
-    this.HandleResult(context, await getHighestFeelingSentenceUseCase.Execute(textDto));
+    this.handleResult(context, await getHighestFeelingSentenceUseCase.execute(textDto));
   };
-  GetLowestFeelingSentence = async (context: Context): Promise<void> => {
+
+  getLowestFeelingSentence = async (context: Context): Promise<void> => {
     const textDto: TextDto = context.request.body;
-    this.HandleResult(context, await getLowestFeelingSentenceUseCase.Execute(textDto));
+    this.handleResult(context, await getLowestFeelingSentenceUseCase.execute(textDto));
   };
 }
 

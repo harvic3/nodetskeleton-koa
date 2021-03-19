@@ -1,10 +1,10 @@
-import * as applicationStatusCode from "../status/applicationStatusCodes.json";
-import resources, { resourceKeys, Resources } from "../locals/index";
-export { IResult, Result, IResultT, ResultT } from "result-tsk";
+import * as applicationStatusCode from "../../../application/shared/status/applicationStatusCodes.json";
+import resources, { resourceKeys, Resources } from "../../../application/shared/locals";
+export { ApplicationError } from "../../../application/shared/errors/ApplicationError";
 import { Validator } from "validator-tsk";
 import mapper, { IMap } from "mapper-tsk";
 
-export class BaseUseCase {
+export class BaseProvider {
   constructor() {
     this.mapper = mapper;
     this.resources = resources;

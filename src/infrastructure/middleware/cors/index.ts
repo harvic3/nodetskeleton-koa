@@ -1,21 +1,24 @@
 import { Context } from "../../server/CoreModules";
 import config from "../../config";
 
-const validOrigins: string[] = config.server.origins.split(",");
+class CorsMiddleware {
+  private readonly validOrigins: string[] = config.server.Origins.split(",");
+  private readonly allowedMethods: string[] = ["GET", "POST", "PUT", "DELETE", "PATCH"];
 
-function verifyOrigin(ctx: Context): string {
-  if (ctx.headers.origin) {
-    const origin: string = ctx.headers.origin;
-    if (validOrigins.indexOf(origin) !== -1) {
-      return origin;
+  handlerOptions = {
+    origin: this.verifyOrigin,
+    allowMethods: this.allowedMethods,
+  };
+
+  private verifyOrigin(ctx: Context): string {
+    if (ctx.headers.origin) {
+      const origin: string = ctx.headers.origin;
+      if (this.validOrigins.indexOf(origin) !== -1) {
+        return origin;
+      }
     }
+    return this.validOrigins[0];
   }
-  return validOrigins[0];
 }
 
-const corsOptions = {
-  origin: verifyOrigin,
-  allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-};
-
-export default corsOptions;
+export default new CorsMiddleware();
